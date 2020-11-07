@@ -11,9 +11,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -81,16 +84,27 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => Creator()),
-          );
-        },
+        onPressed: _onOpenCreate,
         backgroundColor: Color(0xFF4169e1),
         child: Icon(
           Icons.add,
           size: 36,
         ),
+      ),
+    );
+  }
+
+  void _onOpenCreate() async {
+    final String successMessage = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => Creator()),
+    );
+
+    if (successMessage == null) return;
+
+    _scaffoldKey.currentState.showSnackBar(
+      SnackBar(
+        content: Text(successMessage),
+        backgroundColor: Colors.green,
       ),
     );
   }

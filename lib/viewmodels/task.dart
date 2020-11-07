@@ -3,12 +3,9 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:todo_app/models/task.dart';
 import 'package:todo_app/services/db.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskProvider with ChangeNotifier {
-  final _uuid = Uuid();
-
-  Map<String, TaskModel> _tasks;
+  Map<String, TaskModel> _tasks = {};
 
   set tasks(List<TaskModel> inputTasks) {
     inputTasks.forEach((task) {
@@ -18,7 +15,10 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  UnmodifiableListView<TaskModel> get tasks => _tasks?.values?.toList();
+  UnmodifiableListView<TaskModel> get tasks {
+    final list = _tasks?.values?.toList();
+    return UnmodifiableListView<TaskModel>(list);
+  }
 
   DatabaseService dbService;
   TaskProvider({@required this.dbService});
@@ -35,15 +35,9 @@ class TaskProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createTask({
-    @required String title,
-    @required String description,
+  Future<void> createOrUpdateTask({
+    @required TaskModel task,
   }) async {
-    final task = TaskModel();
-    task.id = _uuid.v4();
-    task.title = title;
-    task.description = description;
-
     await dbService.addOrUpdateTask(task);
 
     _tasks[task.id] = task;

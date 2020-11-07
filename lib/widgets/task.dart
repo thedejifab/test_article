@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/models/task.dart';
+import 'package:intl/intl.dart';
+import 'package:todo_app/screens/creator.dart';
 
 class Task extends StatelessWidget {
   final TaskModel task;
@@ -9,12 +11,19 @@ class Task extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () async {
+        await _onOpenCreate(context);
+      },
       leading: CircleAvatar(
         radius: 30,
         backgroundColor: _colorFor(task.title).withOpacity(0.3),
         child: Text(
-          task.title.substring(0, 1),
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
+          toBeginningOfSentenceCase(task.title.substring(0, 1)),
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 24,
+            color: Colors.black,
+          ),
         ),
       ),
       title: Text(
@@ -24,7 +33,22 @@ class Task extends StatelessWidget {
       ),
       subtitle: Text(
         task.description,
-        maxLines: 2,
+        maxLines: 1,
+      ),
+    );
+  }
+
+  Future<void> _onOpenCreate(BuildContext context) async {
+    final String successMessage = await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => Creator(task: task)),
+    );
+
+    if (successMessage == null) return;
+
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        content: Text(successMessage),
+        backgroundColor: Colors.green,
       ),
     );
   }

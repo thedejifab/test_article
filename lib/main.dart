@@ -5,15 +5,20 @@ import 'package:todo_app/screens/home.dart';
 import 'package:todo_app/services/db.dart';
 import 'package:todo_app/viewmodels/task.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final dbService = SembastDbService();
+  await dbService.initializeDbAndCreateStore();
 
   final taskProvider = TaskProvider(
     dbService: dbService,
   );
   taskProvider.getTasks();
 
-  runApp(MyApp(taskProvider: taskProvider));
+  runApp(
+    MyApp(taskProvider: taskProvider),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,18 +31,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: GoogleFonts.inconsolataTextTheme(
-          Theme.of(context).textTheme,
+    return ChangeNotifierProvider<TaskProvider>.value(
+      value: taskProvider,
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          textTheme: GoogleFonts.inconsolataTextTheme(
+            Theme.of(context).textTheme,
+          ),
         ),
-      ),
-      home: ChangeNotifierProvider<TaskProvider>.value(
-        value: taskProvider,
-        child: Home(),
+        home: Home(),
       ),
     );
   }
