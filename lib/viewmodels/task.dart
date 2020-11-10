@@ -43,17 +43,4 @@ class TaskProvider with ChangeNotifier {
     _tasks[task.id] = task;
     notifyListeners();
   }
-
-  Future<void> updateTask(
-    TaskModel task, {
-    @required String updatedTitle,
-    @required String updatedDescription,
-  }) async {
-    task.title = updatedTitle;
-    task.description = updatedDescription;
-
-    await dbService.addOrUpdateTask(task);
-
-    notifyListeners();
-  }
 }

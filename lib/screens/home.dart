@@ -53,6 +53,7 @@ class _HomeState extends State<Home> {
 
               if (tasks == null || tasks.isEmpty) {
                 return Padding(
+                  key: Key('empty_tasks'),
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -84,6 +85,7 @@ class _HomeState extends State<Home> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        key: Key('create_btn'),
         onPressed: _onOpenCreate,
         backgroundColor: Color(0xFF4169e1),
         child: Icon(
