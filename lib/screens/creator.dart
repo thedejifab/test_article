@@ -81,6 +81,7 @@ class _CreatorState extends State<Creator> {
                   ),
                   SizedBox(height: 30),
                   TextFormField(
+                    key: Key('title_field'),
                     controller: _titleController,
                     focusNode: _titleNode,
                     cursorColor: Color(0xFF4169e1),
@@ -101,11 +102,12 @@ class _CreatorState extends State<Creator> {
                     validator: (input) {
                       if (input.trim().isNotEmpty) return null;
 
-                      return 'Task title cannot  be empty';
+                      return 'Task title cannot be empty';
                     },
                   ),
                   SizedBox(height: 30),
                   TextFormField(
+                    key: Key('description_field'),
                     controller: _descriptionController,
                     focusNode: _descriptionNode,
                     maxLines: 10,
@@ -127,11 +129,12 @@ class _CreatorState extends State<Creator> {
                     validator: (input) {
                       if (input.trim().isNotEmpty) return null;
 
-                      return 'Task description cannot  be empty';
+                      return 'Task description cannot be empty';
                     },
                   ),
                   SizedBox(height: 100),
                   FlatButton(
+                    key: Key('action_btn'),
                     onPressed: _onCreateOrUpdate,
                     minWidth: double.infinity,
                     height: 50,
