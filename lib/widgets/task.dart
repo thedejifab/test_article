@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/models/task.dart';
 import 'package:intl/intl.dart';
+import 'package:todo_app/models/task.dart';
 import 'package:todo_app/screens/creator.dart';
+import 'package:todo_app/viewmodels/task.dart';
+import 'package:provider/provider.dart';
 
 class Task extends StatelessWidget {
   final TaskModel task;
@@ -10,33 +12,54 @@ class Task extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return Dismissible(
       key: Key('${task.id}'),
-      onTap: () async {
-        await _onOpenCreate(context);
+      onDismissed: (_) {
+        _onDelete(context);
       },
-      leading: CircleAvatar(
-        radius: 30,
-        backgroundColor: _colorFor(task.title).withOpacity(0.3),
-        child: Text(
-          toBeginningOfSentenceCase(task.title.substring(0, 1)),
-          style: TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 24,
-            color: Colors.black,
+      background: Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Icon(
+            Icons.delete,
+            color: Colors.red,
           ),
         ),
       ),
-      title: Text(
-        task.title,
-        style: TextStyle(fontSize: 20),
-        maxLines: 1,
-      ),
-      subtitle: Text(
-        task.description,
-        maxLines: 1,
+      direction: DismissDirection.endToStart,
+      child: ListTile(
+        onTap: () async {
+          await _onOpenCreate(context);
+        },
+        leading: CircleAvatar(
+          radius: 30,
+          backgroundColor: _colorFor(task.title).withOpacity(0.3),
+          child: Text(
+            toBeginningOfSentenceCase(task.title.substring(0, 1)),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 24,
+              color: Colors.black,
+            ),
+          ),
+        ),
+        title: Text(
+          task.title,
+          style: TextStyle(fontSize: 20),
+          maxLines: 1,
+        ),
+        subtitle: Text(
+          task.description,
+          maxLines: 1,
+        ),
       ),
     );
+  }
+
+  void _onDelete(BuildContext context) async {
+    final taskProvider = context.read<TaskProvider>();
+    await taskProvider.deleteTask(task.id);
   }
 
   Future<void> _onOpenCreate(BuildContext context) async {
